@@ -65,46 +65,58 @@ const MONTHS = [
   };
   
   // Only edit below this comment
-  
-  const createHtml = (athlete) => {
-    firstName, surname, id, races = athlete
-    [date], [time] = races.reverse()
-  
-    const fragment = document.createDocumentFragment();
-  
-    title = document.createElement(h2);
-    title= id;
+  /**
+   * represents the 2 athlete's info in HTML
+   * 
+   * @param {} athlete the athelete object with information
+   * @returns A documentFragment with the new HTML
+   */
+  const createHtml = (athlete) => { 
+    const latestTime =athlete.races[athlete.races.length-1].time;
+    const latestDate= athlete.races[athlete.races.length-1].date
+
+     const fragment = document.createDocumentFragment();
+    const title = document.createElement('h2');
+    title.textContent=athlete.id
     fragment.appendChild(title);
-  
-    const list = document.createElement(dl);
-  
-    const day = date.getDate();
-    const month = MONTHS[date.month];
-    const year = date.year;
-  
-    first, second, third, fourth = timeAsArray;
-    total = first + second + third + fourth;
-  
-    const hours = total / 60;
-    const minutes = total / hours / 60;
-  
+
+    /*creating a Date object from a string , use .getDate &
+    .getFullYear method to get the values of the methods */
+
+    const day = new Date (latestDate).getDate()
+    /**
+     * gets the corresponding index to MONTHS array.
+     */
+    const month = MONTHS[new Date (latestDate).getMonth()];
+    const year = new Date (latestDate).getFullYear();
+
+    const [first, second , third , forth] = latestTime //destructuring
+    const minutes= first + second+ third + forth  
+    const hours = Math.floor(minutes / 60);
+    
+
+    const list = document.createElement('dl');
+
     list.innerHTML = /* html */ `
       <dt>Athlete</dt>
-      <dd>${firstName surname}</dd>
-  
+      <dd>${athlete.firstName} ${athlete.surname}</dd>
+
       <dt>Total Races</dt>
-      <dd>${races}</dd>
+      <dd>${athlete.races.length}</dd>
   
       <dt>Event Date (Latest)</dt>
-      <dd>${day month year}</dd>
-  
-      <dt>Total Time (Latest)</dt>
-      <dd>${hours.padStart(2, 0) minutes}</dd>
+    <dd>${day} ${month} ${year}</dd>
+
+    <dt>Total Time (Latest)</dt>
+    <dd>${hours.toString().padStart(2,"0")}:${minutes}</dd>
     `;
   
     fragment.appendChild(list);
+    return fragment
   }
-  
-  [NM372], [SV782] = data
-  document.querySelector(NM372).appendChild(createHtml(NM372));
-  document.querySelector(SV782).appendChild(createHtml(SV782));
+  // use destructuring to get substitute for the parameter(athlete)
+  const {NM372,SV782} = data.response.data 
+
+  document.querySelector('[data-athlete="NM372"]').appendChild(createHtml(NM372));
+  document.querySelector('[data-athlete="SV782"]').appendChild(createHtml(SV782));
+   
